@@ -38,15 +38,15 @@
 %% Module API
 %% =============================================================================
 init(Node) ->
-    Columns = [{"Pid", 12, [{align, right}]},
+    Columns = [{"Pid", 16, [{align, right}]},
 	       {"Registered Name", 20, []},
-           {"Initial Call", 40, []},
+           {"Initial Call", 30, []},
            {"Current Function", 40, []},
 	       {"Reductions", 12, []},
 	       {"MQueue", 6, []},
-	       {"HSize", 6, []},
+	       {"HSize", 12, []},
 	       {"SSize", 6, []},
-	       {"HTot", 6, []}],
+	       {"HTot", 12, []}],
     {ok, {Columns, 5}, #state{ node = Node }}.
 
 %% Header Callback
