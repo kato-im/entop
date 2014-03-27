@@ -40,12 +40,14 @@
 init(Node) ->
     Columns = [{"Pid", 12, [{align, right}]},
 	       {"Registered Name", 20, []},
+           {"Initial Call", 40, []},
+           {"Current Function", 40, []},
 	       {"Reductions", 12, []},
 	       {"MQueue", 6, []},
 	       {"HSize", 6, []},
 	       {"SSize", 6, []},
 	       {"HTot", 6, []}],
-    {ok, {Columns, 3}, #state{ node = Node }}.
+    {ok, {Columns, 5}, #state{ node = Node }}.
 
 %% Header Callback
 header(SystemInfo, State) ->
@@ -86,12 +88,17 @@ row(ProcessInfo, State) ->
 		  Name ->
 		      atom_to_list(Name)
 	      end,
+    InitialCall = fun2str(proplists:get_value(initial_call, ProcessInfo, 0)),
+    CurrentFunction = fun2str(proplists:get_value(current_function, ProcessInfo, 0)),
     Reductions = proplists:get_value(reductions, ProcessInfo, 0),
     Queue = proplists:get_value(message_queue_len, ProcessInfo, 0),
     Heap = proplists:get_value(heap_size, ProcessInfo, 0),
     Stack = proplists:get_value(stack_size, ProcessInfo, 0),
     HeapTot = proplists:get_value(total_heap_size, ProcessInfo, 0),
-    {ok, {Pid, RegName, Reductions, Queue, Heap, Stack, HeapTot}, State}.
+    {ok, {Pid, RegName, InitialCall, CurrentFunction, Reductions, Queue, Heap, Stack, HeapTot}, State}.
+
+fun2str({M, N, A}) ->
+    lists:append([atom_to_list(M), ":", atom_to_list(N), "/", integer_to_list(A)]).
 
 mem2str(Mem) ->
     if Mem > ?GIB -> io_lib:format("~.1fm",[Mem/?MIB]);
